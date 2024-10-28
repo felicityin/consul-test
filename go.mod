@@ -3,12 +3,16 @@ module consul
 go 1.21.4
 
 require (
+	github.com/hashicorp/consul/api v1.26.1
+	github.com/hedzr/cmdr v1.11.26
+	github.com/hedzr/consul-tags v0.7.3
+)
+
+require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
-	github.com/armon/consul-kv v0.0.0-20150130235219-044c7ba384f8 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
-	github.com/hashicorp/consul/api v1.26.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -17,9 +21,7 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
-	github.com/hedzr/cmdr v1.11.26 // indirect
 	github.com/hedzr/cmdr-base v1.0.0 // indirect
-	github.com/hedzr/consul-tags v0.7.3 // indirect
 	github.com/hedzr/evendeep v0.4.17 // indirect
 	github.com/hedzr/log v1.6.25 // indirect
 	github.com/hedzr/logex v1.11.26 // indirect

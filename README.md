@@ -12,4 +12,6 @@ go test -v test/tags_test.go -test.run TestFilterByTag
 go test -v test/kv_test.go -test.run TestPutKV
 
 go test -v test/kv_test.go -test.run TestDeleteKV
+
+go test -v test/kv_test.go -test.run TestWatchKV
 ```

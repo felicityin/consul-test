@@ -2,6 +2,9 @@ package test
 
 import (
 	"bytes"
+	"context"
+	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
@@ -14,7 +17,7 @@ import (
 func TestPutKV(t *testing.T) {
 	kv := c.GetClient(c.ConsulAddr, c.Scheme, c.Token).KV()
 
-	key := "Qme8rV3sDXki9HfvK6zYRRvdfiC2ZP3Ybw8zGf6qTdaBL5"
+	key := "test-key"
 	value := []byte("7")
 
 	// Put the key
@@ -49,7 +52,7 @@ func TestDeleteKV(t *testing.T) {
 	kv := c.GetClient(c.ConsulAddr, c.Scheme, c.Token).KV()
 
 	// Get a get without a key
-	key := "Qme8rV3sDXki9HfvK6zYRRvdfiC2ZP3Ybw8zGf6qTdaBL5"
+	key := "test-key"
 	_, pair, err := kv.Get(key, &api.QueryOptions{Token: c.KvToken})
 	if err != nil {
 		t.Fatalf("err: %v", err)
@@ -70,5 +73,27 @@ func TestDeleteKV(t *testing.T) {
 	}
 	if pair != nil {
 		t.Fatalf("unexpected value: %#v", pair)
+	}
+}
+
+// go test -v test/kv_test.go -test.run TestWatchKV
+func TestWatchKV(t *testing.T) {
+	key := "test-key"
+	client := c.GetClient(c.ConsulAddr, c.Scheme, c.KvToken)
+	kvWatcher := c.New(client)
+
+	ch, _ := kvWatcher.WatchKey(context.Background(), key)
+
+	for kv := range ch {
+		if kv == nil {
+			t.Errorf("err: kv is nil")
+		} else {
+			i, err := strconv.Atoi(string(kv.Value))
+			if err != nil {
+				fmt.Printf("Error %v\n", err)
+				return
+			}
+			t.Logf("new value! k: %s, v: %d\n", kv.Key, i)
+		}
 	}
 }
