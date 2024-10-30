@@ -97,3 +97,21 @@ func TestWatchKV(t *testing.T) {
 		}
 	}
 }
+
+// go test -v test/kv_test.go -test.run TestListKV
+func TestListKV(t *testing.T) {
+	client := c.GetClient(c.ConsulAddr, c.Scheme, c.KvToken)
+	kvWatcher := c.New(client)
+
+	ch, _ := kvWatcher.WatchTree(context.Background(), "group/")
+
+	for kvs := range ch {
+		if kvs == nil {
+			t.Errorf("err: kv is nil")
+		} else {
+			for _, kv := range kvs {
+				t.Logf("new value! k: %s, v: %s\n", kv.Key, kv.Value)
+			}
+		}
+	}
+}

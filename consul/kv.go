@@ -76,3 +76,52 @@ func (w *Watcher) WatchKey(ctx context.Context, key string) (<-chan *consul.KVPa
 
 	return out, nil
 }
+
+// WatchTree watches for changes to a directory and emit key value pairs
+func (w *Watcher) WatchTree(ctx context.Context, path string) (<-chan consul.KVPairs, error) {
+	out := make(chan consul.KVPairs)
+	kv := w.consul.KV()
+	var waitIndex uint64
+
+	opts := &consul.QueryOptions{
+		AllowStale:        true,
+		RequireConsistent: false,
+		UseCache:          true,
+		WaitTime:          DefaultWaitTime,
+		WaitIndex:         waitIndex,
+	}
+
+	go func() {
+		defer close(out)
+
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+			}
+
+			kvPairs, meta, err := kv.List(path, opts.WithContext(ctx))
+			if err != nil {
+				if consul.IsRetryableError(err) {
+					opts.WaitIndex = 0
+				}
+				continue
+			}
+
+			// if we have the same index, then we didn't find any new values
+			if waitIndex == meta.LastIndex {
+				time.Sleep(SleepTime)
+				continue
+			}
+
+			waitIndex = meta.LastIndex
+
+			if kvPairs != nil {
+				out <- kvPairs
+			}
+		}
+	}()
+
+	return out, nil
+}

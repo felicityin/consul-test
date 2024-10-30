@@ -14,4 +14,6 @@ go test -v test/kv_test.go -test.run TestPutKV
 go test -v test/kv_test.go -test.run TestDeleteKV
 
 go test -v test/kv_test.go -test.run TestWatchKV
+
+go test -v test/kv_test.go -test.run TestListKV
 ```
